@@ -5,13 +5,13 @@ import { GlobalStyles } from "../../constants/styles";
 import { getFormattedDate } from "../../util/date";
 import { useNavigation } from "@react-navigation/native";
 
-const ExpenseItem = ({ amount, date, description }) => {
+const ExpenseItem = ({ amount, date, description, id }) => {
   const navigation = useNavigation();
 
   return (
     <Pressable
       onPress={() => {
-        navigation.navigate("ManageExpense", {});
+        navigation.navigate("ManageExpense", { expenseId: id });
       }}
       style={({ pressed }) => pressed && styles.pressed}
     >
@@ -34,6 +34,7 @@ ExpenseItem.propTypes = {
   amount: PropTypes.number,
   date: PropTypes.objectOf(Date),
   description: PropTypes.string,
+  id: PropTypes.string,
 };
 
 export default ExpenseItem;
