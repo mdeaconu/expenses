@@ -19,10 +19,21 @@ const ManageExpense = () => {
   return (
     <View style={styles.container}>
       <View style={styles.buttons}>
-        <Button style={styles.button} mode="flat" onPress={() => {}}>
+        <Button
+          style={styles.button}
+          mode="flat"
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
           Cancel
         </Button>
-        <Button style={styles.button} onPress={() => {}}>
+        <Button
+          style={styles.button}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        >
           {isEditing ? "Update" : "Add"}
         </Button>
       </View>
@@ -32,7 +43,9 @@ const ManageExpense = () => {
             icon="trash"
             color={GlobalStyles.colors.error500}
             size={36}
-            onPress={() => {}}
+            onPress={() => {
+              navigation.goBack();
+            }}
           />
         </View>
       )}
