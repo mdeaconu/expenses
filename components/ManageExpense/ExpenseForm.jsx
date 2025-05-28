@@ -9,7 +9,7 @@ const ExpenseForm = () => {
       <Input
         label="Amount"
         textInputConfig={{
-          keyboardType: "decimal",
+          keyboardType: "decimal-pad",
           onChangeText: () => {},
         }}
       />
