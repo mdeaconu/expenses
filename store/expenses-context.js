@@ -35,19 +35,24 @@ const expensesReducer = (state, action) => {
 const ExpensesContextProvider = ({ children }) => {
   const [expensesState, dispatch] = useReducer(expensesReducer, DUMMY_EXPENSES);
 
-  function addExpense(expenseData) {
-    dispatch({ type: "ADD", payload: expenseData });
-  }
+  const value = {
+    expenses: expensesState,
+    addExpense: (expenseData) => {
+      dispatch({ type: "ADD", payload: expenseData });
+    },
+    deleteExpense: (id) => {
+      dispatch({ type: "DELETE", payload: id });
+    },
+    updateExpense: (id, expenseData) => {
+      dispatch({ type: "UPDATE", payload: { id: id, data: expenseData } });
+    },
+  };
 
-  function deleteExpense(id) {
-    dispatch({ type: "DELETE", payload: id });
-  }
-
-  function updateExpense(id, expenseData) {
-    dispatch({ type: "UPDATE", payload: { id: id, data: expenseData } });
-  }
-
-  return <ExpensesContext.Provider>{children}</ExpensesContext.Provider>;
+  return (
+    <ExpensesContext.Provider value={value}>
+      {children}
+    </ExpensesContext.Provider>
+  );
 };
 
 ExpensesContextProvider.propTypes = {

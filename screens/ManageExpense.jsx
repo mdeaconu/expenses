@@ -1,7 +1,9 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useLayoutEffect } from "react";
-import { Button, StyleSheet, View } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { StyleSheet, View } from "react-native";
+
 import IconButton from "../components/UI/IconButton";
+import Button from "../components/UI/Button";
 import { GlobalStyles } from "../constants/styles";
 
 const ManageExpense = () => {
