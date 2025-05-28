@@ -7,12 +7,16 @@ import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { ExpensesContext } from "../store/expenses-context";
 
 import { GlobalStyles } from "../constants/styles";
+
 const ManageExpense = () => {
   const expensesContext = useContext(ExpensesContext);
   const navigation = useNavigation();
   const route = useRoute();
   const expenseId = route.params?.expenseId;
   const isEditing = !!expenseId;
+  const expense = expensesContext.expenses.find(
+    (expense) => expense.id === expenseId,
+  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -23,6 +27,7 @@ const ManageExpense = () => {
   return (
     <View style={styles.container}>
       <ExpenseForm
+        defaultValues={expense}
         submitButtonLabel={isEditing ? "Update" : "Add"}
         onCancel={() => {
           navigation.goBack();
