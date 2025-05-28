@@ -7,8 +7,10 @@ const apiClient = axios.create({ baseURL: BACKEND_URL });
 /**
  * @param {Object} expenseData
  */
-export function storeExpense(expenseData) {
-  apiClient.post("/expenses.json", expenseData);
+export async function storeExpense(expenseData) {
+  const response = await apiClient.post("/expenses.json", expenseData);
+  const id = response.data.name;
+  return id;
 }
 
 export async function fetchExpenses() {

@@ -25,12 +25,12 @@ const ManageExpense = () => {
     });
   }, [navigation, isEditing]);
 
-  const submitHandler = (expenseData) => {
+  const submitHandler = async (expenseData) => {
     if (isEditing) {
       expensesContext.updateExpense(expenseId, expenseData);
     } else {
-      storeExpense(expenseData);
-      expensesContext.addExpense(expenseData);
+      const id = await storeExpense(expenseData);
+      expensesContext.addExpense({ ...expenseData, id: id });
     }
     navigation.goBack();
   };
