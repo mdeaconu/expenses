@@ -7,6 +7,7 @@ import ExpenseForm from "../components/ManageExpense/ExpenseForm";
 import { ExpensesContext } from "../store/expenses-context";
 
 import { GlobalStyles } from "../constants/styles";
+import { storeExpense } from "../util/http";
 
 const ManageExpense = () => {
   const expensesContext = useContext(ExpensesContext);
@@ -28,6 +29,7 @@ const ManageExpense = () => {
     if (isEditing) {
       expensesContext.updateExpense(expenseId, expenseData);
     } else {
+      storeExpense(expenseData);
       expensesContext.addExpense(expenseData);
     }
     navigation.goBack();
