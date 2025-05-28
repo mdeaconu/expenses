@@ -1,16 +1,22 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
 import ExpensesSummary from "./ExpensesSummary";
 import ExpensesList from "./ExpensesList";
 import { GlobalStyles } from "../../constants/styles";
 
-const ExpensesOutput = ({ expenses, expensesPeriod }) => {
+const ExpensesOutput = ({ expenses, expensesPeriod, fallbackText }) => {
+  let content = <Text style={styles.infoText}>{fallbackText}</Text>;
+
+  if (expenses.length) {
+    content = <ExpensesList expenses={expenses} />;
+  }
+
   return (
     <View style={styles.container}>
       <ExpensesSummary expenses={expenses} periodName={expensesPeriod} />
-      <ExpensesList expenses={expenses} />
+      {content}
     </View>
   );
 };
@@ -18,6 +24,7 @@ const ExpensesOutput = ({ expenses, expensesPeriod }) => {
 ExpensesOutput.propTypes = {
   expenses: PropTypes.array,
   expensesPeriod: PropTypes.string,
+  fallbackText: PropTypes.string,
 };
 
 export default ExpensesOutput;
@@ -27,5 +34,11 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 32,
     backgroundColor: GlobalStyles.colors.primary700,
+  },
+  infoText: {
+    color: "white",
+    fontSize: 16,
+    textAlign: "center",
+    marginTop: 32,
   },
 });
