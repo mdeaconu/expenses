@@ -7,12 +7,13 @@ import { useNavigation } from "@react-navigation/native";
 
 const ExpenseItem = ({ amount, date, description, id }) => {
   const navigation = useNavigation();
+  const onPressHandler = () => {
+    navigation.navigate("ManageExpense", { expenseId: id });
+  };
 
   return (
     <Pressable
-      onPress={() => {
-        navigation.navigate("ManageExpense", { expenseId: id });
-      }}
+      onPress={onPressHandler}
       style={({ pressed }) => pressed && styles.pressed}
     >
       <View style={styles.expenseItem}>

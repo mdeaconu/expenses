@@ -24,14 +24,32 @@ const ExpenseForm = ({
    *
    * @description Sets the state altering certain field based on inputIdentifier
    */
-  function inputChangeHandler(inputIdentifier, enteredValue) {
+  const inputChangeHandler = (inputIdentifier, enteredValue) => {
     setInputValues((currentValues) => {
       return {
         ...currentValues,
         [inputIdentifier]: enteredValue,
       };
     });
-  }
+  };
+
+  const submitHandler = () => {
+    const expenseData = {
+      amount: +inputValues.amount,
+      date: new Date(inputValues.date),
+      description: inputValues.description,
+    };
+
+    const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
+    const dateIsValid = expenseData.date.toString() !== "Invalid Date";
+    const descriptionIsValid = expenseData.description.trim().length > 0;
+
+    if (amountIsValid && dateIsValid && descriptionIsValid) {
+      onSubmit(expenseData);
+    } else {
+      Alert.alert("Invalid input", "Please check your input values");
+    }
+  };
 
   return (
     <View style={styles.form}>
@@ -71,28 +89,7 @@ const ExpenseForm = ({
         <Button style={styles.button} mode="flat" onPress={onCancel}>
           Cancel
         </Button>
-        <Button
-          style={styles.button}
-          onPress={() => {
-            const expenseData = {
-              amount: +inputValues.amount,
-              date: new Date(inputValues.date),
-              description: inputValues.description,
-            };
-
-            const amountIsValid =
-              !isNaN(expenseData.amount) && expenseData.amount > 0;
-            const dateIsValid = expenseData.date.toString() !== "Invalid Date";
-            const descriptionIsValid =
-              expenseData.description.trim().length > 0;
-
-            if (amountIsValid && dateIsValid && descriptionIsValid) {
-              onSubmit(expenseData);
-            } else {
-              Alert.alert("Invalid input", "Please check your input values");
-            }
-          }}
-        >
+        <Button style={styles.button} onPress={submitHandler}>
           {submitButtonLabel}
         </Button>
       </View>

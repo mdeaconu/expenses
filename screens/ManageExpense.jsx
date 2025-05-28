@@ -24,22 +24,31 @@ const ManageExpense = () => {
     });
   }, [navigation, isEditing]);
 
+  const submitHandler = (expenseData) => {
+    if (isEditing) {
+      expensesContext.updateExpense(expenseId, expenseData);
+    } else {
+      expensesContext.addExpense(expenseData);
+    }
+    navigation.goBack();
+  };
+
+  const deleteHandler = () => {
+    expensesContext.deleteExpense(expenseId);
+    navigation.goBack();
+  };
+
+  const cancelHandler = () => {
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
       <ExpenseForm
         defaultValues={expense}
         submitButtonLabel={isEditing ? "Update" : "Add"}
-        onCancel={() => {
-          navigation.goBack();
-        }}
-        onSubmit={(expenseData) => {
-          if (isEditing) {
-            expensesContext.updateExpense(expenseId, expenseData);
-          } else {
-            expensesContext.addExpense(expenseData);
-          }
-          navigation.goBack();
-        }}
+        onCancel={cancelHandler}
+        onSubmit={submitHandler}
       />
       {isEditing && (
         <View style={styles.deleteContainer}>
@@ -47,10 +56,7 @@ const ManageExpense = () => {
             icon="trash"
             color={GlobalStyles.colors.error500}
             size={36}
-            onPress={() => {
-              expensesContext.deleteExpense(expenseId);
-              navigation.goBack();
-            }}
+            onPress={deleteHandler}
           />
         </View>
       )}
