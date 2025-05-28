@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import PropTypes from "prop-types";
 
 import Button from "../UI/Button";
@@ -12,10 +12,19 @@ const ExpenseForm = ({
   onSubmit,
   submitButtonLabel,
 }) => {
-  const [inputValues, setInputValues] = useState({
-    amount: defaultValues ? defaultValues.amount.toString() : "",
-    date: defaultValues ? getFormattedDate(defaultValues.date) : "",
-    description: defaultValues ? defaultValues.description : "",
+  const [inputs, setInputs] = useState({
+    amount: {
+      value: defaultValues ? defaultValues.amount.toString() : "",
+      isValid: true, //!!defaultValues,
+    },
+    date: {
+      value: defaultValues ? getFormattedDate(defaultValues.date) : "",
+      isValid: true,
+    },
+    description: {
+      value: defaultValues ? defaultValues.description : "",
+      isValid: true,
+    },
   });
 
   /**
@@ -25,19 +34,19 @@ const ExpenseForm = ({
    * @description Sets the state altering certain field based on inputIdentifier
    */
   const inputChangeHandler = (inputIdentifier, enteredValue) => {
-    setInputValues((currentValues) => {
+    setInputs((currentValues) => {
       return {
         ...currentValues,
-        [inputIdentifier]: enteredValue,
+        [inputIdentifier]: { value: enteredValue, isValid: true },
       };
     });
   };
 
   const submitHandler = () => {
     const expenseData = {
-      amount: +inputValues.amount,
-      date: new Date(inputValues.date),
-      description: inputValues.description,
+      amount: +inputs.amount.value,
+      date: new Date(inputs.date.value),
+      description: inputs.description.value,
     };
 
     const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
@@ -47,9 +56,24 @@ const ExpenseForm = ({
     if (amountIsValid && dateIsValid && descriptionIsValid) {
       onSubmit(expenseData);
     } else {
-      Alert.alert("Invalid input", "Please check your input values");
+      setInputs((currentInputs) => {
+        return {
+          amount: { value: currentInputs.amount.value, isValid: amountIsValid },
+          date: { value: currentInputs.date.value, isValid: dateIsValid },
+          description: {
+            value: currentInputs.description.value,
+            isValid: descriptionIsValid,
+          },
+        };
+      });
     }
   };
+
+  const formIsInvalid = !(
+    inputs.amount.isValid &&
+    inputs.date.isValid &&
+    inputs.description.isValid
+  );
 
   return (
     <View style={styles.form}>
@@ -62,7 +86,7 @@ const ExpenseForm = ({
             onChangeText: (amount) => {
               inputChangeHandler("amount", amount);
             },
-            value: inputValues.amount,
+            value: inputs.amount.value,
           }}
           style={styles.rowInput}
         />
@@ -72,7 +96,7 @@ const ExpenseForm = ({
             placeholder: "YYYY-MM-DD",
             maxLength: 10,
             onChangeText: inputChangeHandler.bind(this, "date"),
-            value: inputValues.date,
+            value: inputs.date.value,
           }}
           style={styles.rowInput}
         />
@@ -82,9 +106,12 @@ const ExpenseForm = ({
         textInputConfig={{
           multiline: true,
           onChangeText: inputChangeHandler.bind(this, "description"),
-          value: inputValues.description,
+          value: inputs.description.value,
         }}
       />
+      {formIsInvalid && (
+        <Text>Invalid input values - please check your entered data!</Text>
+      )}
       <View style={styles.buttons}>
         <Button style={styles.button} mode="flat" onPress={onCancel}>
           Cancel
