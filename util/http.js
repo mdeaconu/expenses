@@ -5,7 +5,11 @@ const BACKEND_URL =
 const apiClient = axios.create({ baseURL: BACKEND_URL });
 
 /**
- * @param {Object} expenseData
+ * @param {Object} expenseData - The expense payload data
+ * @param {string} expenseData.amount - The expense amount
+ * @param {string} expenseData.date - The expense date
+ * @param {string} expenseData.description - The expense description
+ * @returns {Promise<string>} A promise that resolves when the store is complete.
  */
 export async function storeExpense(expenseData) {
   const response = await apiClient.post("/expenses.json", expenseData);
@@ -22,4 +26,24 @@ export async function fetchExpenses() {
     date: new Date(value.date),
     description: value.description,
   }));
+}
+
+/**
+ * @param {string} id
+ * @param {Object} expenseData - The expense payload data
+ * @param {string} expenseData.amount - The expense amount
+ * @param {string} expenseData.date - The expense date
+ * @param {string} expenseData.description - The expense description
+ * @returns {Promise<any>} A promise that resolves when the update is complete.
+ */
+export function updateExpense(id, expenseData) {
+  return apiClient.put(`/expenses/${id}.json`, expenseData);
+}
+
+/**
+ * @param {string} id
+ * @returns {Promise<any>} A promise that resolves when the delete is complete.
+ */
+export function deleteExpense(id) {
+  return apiClient.put(`/expenses/${id}.json`);
 }
