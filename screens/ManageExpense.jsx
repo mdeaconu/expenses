@@ -9,9 +9,11 @@ import { ExpensesContext } from "../store/expenses-context";
 import { GlobalStyles } from "../constants/styles";
 import { deleteExpense, storeExpense, updateExpense } from "../util/http";
 import { LoadingOverlay } from "../components/UI/LoadingOverlay";
+import { ErrorOverlay } from "../components/UI/ErrorOverlay";
 
 const ManageExpense = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState();
   const expensesContext = useContext(ExpensesContext);
   const navigation = useNavigation();
   const route = useRoute();
@@ -28,27 +30,43 @@ const ManageExpense = () => {
   }, [navigation, isEditing]);
 
   const submitHandler = async (expenseData) => {
-    setIsSubmitting(true);
-    if (isEditing) {
-      expensesContext.updateExpense(expenseId, expenseData);
-      await updateExpense(expenseId, expenseData);
-    } else {
-      const id = await storeExpense(expenseData);
-      expensesContext.addExpense({ ...expenseData, id: id });
+    try {
+      setIsSubmitting(true);
+      if (isEditing) {
+        expensesContext.updateExpense(expenseId, expenseData);
+        await updateExpense(expenseId, expenseData);
+      } else {
+        const id = await storeExpense(expenseData);
+        expensesContext.addExpense({ ...expenseData, id: id });
+      }
+      navigation.goBack();
+    } catch {
+      setError("Could not save data - please try again later!");
+    } finally {
+      setIsSubmitting(false);
     }
-    navigation.goBack();
   };
 
   const deleteHandler = async () => {
-    setIsSubmitting(true);
-    expensesContext.deleteExpense(expenseId);
-    await deleteExpense(expenseId);
-    navigation.goBack();
+    try {
+      setIsSubmitting(true);
+      expensesContext.deleteExpense(expenseId);
+      await deleteExpense(expenseId);
+      navigation.goBack();
+    } catch {
+      setError("Could not delete expense - please try again later!");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const cancelHandler = () => {
     navigation.goBack();
   };
+
+  if (error && !isSubmitting) {
+    return <ErrorOverlay message={error} />;
+  }
 
   if (isSubmitting) {
     return <LoadingOverlay />;

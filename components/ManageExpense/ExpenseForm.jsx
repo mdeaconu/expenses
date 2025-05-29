@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 import Button from "../UI/Button";
 import Input from "./Input";
-import { getFormattedDate } from "../../util/date";
+import { getFormattedDate, isValidDate } from "../../util/date";
 import { GlobalStyles } from "../../constants/styles";
 
 const ExpenseForm = ({
@@ -46,12 +46,12 @@ const ExpenseForm = ({
   const submitHandler = () => {
     const expenseData = {
       amount: +inputs.amount.value,
-      date: new Date(inputs.date.value),
+      date: isValidDate(inputs.date.value) ? new Date(inputs.date.value) : null,
       description: inputs.description.value,
     };
 
     const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
-    const dateIsValid = expenseData.date.toString() !== "Invalid Date";
+    const dateIsValid = expenseData.date !== null;
     const descriptionIsValid = expenseData.description.trim().length > 0;
 
     if (amountIsValid && dateIsValid && descriptionIsValid) {
